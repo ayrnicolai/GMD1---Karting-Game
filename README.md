@@ -7,6 +7,10 @@ https://drive.google.com/file/d/1w0ed32pwT24GyDldElVuhDkzCT3qCCg0/view?usp=shari
 The youtube clip
 https://youtu.be/EMMAWWgoOrs
 
+3rd party sources/code:
+
 This is what i based my cart controller on, and the model/prefab itself
 https://www.youtube.com/watch?v=6Y1bAvRYqbU&list=PLhWBaV_gmpGXxscZr8PIcreyYkw8VlnKn
+
+
 
