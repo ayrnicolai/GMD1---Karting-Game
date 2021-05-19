@@ -28,6 +28,9 @@ public class Car_Controller : MonoBehaviour
     public float WheelsRPM;
     public float KPH;
 
+    public float vertical;
+    public float horizontal;
+    public bool handbrake;
 
     private WheelFrictionCurve forwardFriction, sidewaysfriction;
     public float handBrakeFrictionMultiplier = 2;
@@ -46,13 +49,21 @@ public class Car_Controller : MonoBehaviour
         animateWheels();
         moveVehicle();
         steerVehicle();
-        Jump();
         addDownForce();
         getFriction();
         adjustTraction();
-
+        keyboardDrive();
 
     }
+    private void keyboardDrive()
+    {
+        vertical = Input.GetAxis("Vertical");
+        horizontal = Input.GetAxis("Horizontal");
+        handbrake = (Input.GetAxis("Jump") != 0) ? true : false;
+    }
+
+
+
     private void moveVehicle()
     {
         if (drive == driveType.allWheelDrive)
@@ -60,58 +71,67 @@ public class Car_Controller : MonoBehaviour
             //We add torque to the wheels/wheelcolliders, it divides the torque in 4. and it delivers power to backwheels
             for (int i = 0; i < wheels.Length; i++)
             {
-                wheels[i].motorTorque = IM.vertical * (motorTorque / 4);
+                wheels[i].motorTorque = vertical * (motorTorque / 4);
             }
-        } else if (drive == driveType.rearWheelDrive)
+        }
+        else if (drive == driveType.rearWheelDrive)
         {
             for (int i = 2; i < wheels.Length; i++)
             {
-                wheels[i].motorTorque = IM.vertical * (motorTorque / 2);
+                wheels[i].motorTorque = vertical * (motorTorque / 2);
             }
-        } else
+        }
+        else
         {
             for (int i = 0; i < wheels.Length - 2; i++)
             {
-                wheels[i].motorTorque = IM.vertical * (motorTorque / 2);
+                wheels[i].motorTorque = vertical * (motorTorque / 2);
             }
         }
-       // if (IM.handbrake)
-      //  {
-      //      wheels[3].brakeTorque = wheels[2].brakeTorque = brakePower;
-       // } else
-       // {
+
+
+        // if (IM.handbrake)
+        //  {
+        //      wheels[3].brakeTorque = wheels[2].brakeTorque = brakePower;
+        // } else
+        // {
         //    wheels[3].brakeTorque = wheels[2].brakeTorque = 0;
 
-      //  }
-        KPH = rigidbody.velocity.magnitude * 3.6f;
+        //  }
+        KPH = rigidbody.velocity.magnitude * 1f;
 
 
 
 
     }
 
-    private void steerVehicle() {
-        
+    private void steerVehicle()
+    {
+
         //Ackerman Turning, Turns one wheel more than the others, so it turns better
 
-        if (IM.horizontal > 0)
+        if (horizontal > 0)
         {
-            wheels[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius + (1.5f / 2))) * IM.horizontal;
-            wheels[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius - (1.5f / 2))) * IM.horizontal;
+            wheels[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius + (1.5f / 2))) * horizontal;
+            wheels[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius - (1.5f / 2))) * horizontal;
 
-        } else if (IM.horizontal < 0)
+        }
+        else if (horizontal < 0)
         {
-            wheels[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius - (1.5f / 2))) * IM.horizontal;
-            wheels[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius + (1.5f / 2))) * IM.horizontal;
+            wheels[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius - (1.5f / 2))) * horizontal;
+            wheels[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(2.55f / (radius + (1.5f / 2))) * horizontal;
 
-        } else
+        }
+        else
         {
             wheels[0].steerAngle = 0;
             wheels[1].steerAngle = 0;
         }
-         
+
 
     }
+
+
 
     void animateWheels()
     {
@@ -152,14 +172,12 @@ public class Car_Controller : MonoBehaviour
     }
 
 
-
-    
     public float handBrakeFriction = 0;
 
     void adjustTraction()
     {
-        
-        if (!IM.handbrake)
+
+        if (!handbrake)
         {
             forwardFriction = wheels[0].forwardFriction;
             sidewaysfriction = wheels[0].sidewaysFriction;
@@ -167,13 +185,13 @@ public class Car_Controller : MonoBehaviour
             forwardFriction.extremumValue = forwardFriction.asymptoteValue = ((KPH * handBrakeFrictionMultiplier) / 300) + 1;
             sidewaysfriction.extremumValue = sidewaysfriction.extremumValue = ((KPH * handBrakeFrictionMultiplier) / 300) + 1;
 
-            for(int i = 0; i <4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 wheels[i].forwardFriction = forwardFriction;
                 wheels[i].sidewaysFriction = sidewaysfriction;
             }
         }
-        else if(IM.handbrake)
+        else if (handbrake)
         {
             sidewaysfriction = wheels[0].sidewaysFriction;
             forwardFriction = wheels[0].forwardFriction;
@@ -182,7 +200,7 @@ public class Car_Controller : MonoBehaviour
             sidewaysfriction.extremumValue = sidewaysfriction.asymptoteValue = Mathf.SmoothDamp(sidewaysfriction.asymptoteValue, handBrakeFriction, ref velocity, 0.05f * Time.deltaTime);
             forwardFriction.extremumValue = forwardFriction.asymptoteValue = Mathf.SmoothDamp(sidewaysfriction.asymptoteValue, handBrakeFriction, ref velocity, 0.05f * Time.deltaTime);
 
-            for (int i = 2; i <4; i++)
+            for (int i = 2; i < 4; i++)
             {
                 wheels[i].forwardFriction = forwardFriction;
                 wheels[i].sidewaysFriction = sidewaysfriction;
@@ -197,37 +215,5 @@ public class Car_Controller : MonoBehaviour
             }
         }
     }
-
-
-
-    void Jump()
-    {
-        if (carIsOnGround)
-        {
-            if (Input.GetKey(KeyCode.V))
-            {
-                rigidbody.AddForce(new Vector3(0, 3000, 0), ForceMode.Impulse);
-                carIsOnGround = false;
-            }
-            else if (!carIsOnGround)
-            {
-                rigidbody.AddForce(new Vector3(0, 0, 0), ForceMode.Impulse);
-
-            }
-        }
-
-
-    }
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-
-        if (collision.gameObject.name == "Ground")
-
-            {
-                carIsOnGround = true;
-        }
-    }
-   
 }
+

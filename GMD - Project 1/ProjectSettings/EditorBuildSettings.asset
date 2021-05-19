@@ -9,9 +9,21 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: e5cc21e0d038e1442aa025e6ce95821d
   - enabled: 1
+    path: Assets/Scenes/Garage.unity
+    guid: dc60aeb1387fbbf4f8ec062a9496d9d4
+  - enabled: 1
     path: Assets/Scenes/FreeRoamArea01.unity
     guid: cd00113b6278dd24caa8dd4e25e2e82f
   - enabled: 1
     path: Assets/Scenes/Race1.unity
     guid: 54cd0ee07e7c19a4e8c71f4dd987df68
+  - enabled: 1
+    path: Assets/Scenes/FreeRoamAreaComplete1.unity
+    guid: 9c2077cf12c333c4bbe3771e79141221
+  - enabled: 1
+    path: Assets/Scenes/Race2.unity
+    guid: 2bb6d0b08a8661641a4f1c373414982c
+  - enabled: 1
+    path: Assets/Scenes/FreeRoamAreaComplete3.unity
+    guid: ecba200c0b2483a449d00e9b6e76fc33
   m_configObjects: {}

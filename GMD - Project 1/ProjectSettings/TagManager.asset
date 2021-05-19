@@ -11,6 +11,8 @@ TagManager:
   - gameManager
   - AI
   - Pick Up
+  - Grass
+  - Trigger
   layers:
   - Default
   - TransparentFX

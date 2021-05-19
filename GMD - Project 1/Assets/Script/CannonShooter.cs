@@ -4,32 +4,20 @@ using UnityEngine;
 
 public class CannonShooter : MonoBehaviour
 {
-    GameObject prefab;
-   
+    public GameObject CannonBall;
+    public float FirePower;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        prefab = Resources.Load("Meteor") as GameObject;
-        
+    // Use this for initialization
+    void Start () {
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject projectile = Instantiate(prefab) as GameObject;
-            projectile.transform.position = transform.position + Camera.main.transform.forward * 2;
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-            rb.velocity = Camera.main.transform.forward * 40;
-            
-
-
+    void FixedUpdate () {
+        if(Input.GetMouseButtonDown(0)) {
+            Instantiate(CannonBall, transform.position, transform.rotation);
+            CannonBall.GetComponent<Rigidbody>().AddForce(0, 0, FirePower);
+            transform.position = new Vector3(20, transform.position.y, transform.position.z);
         }
-
-
     }
-    
-
 }
